@@ -6,6 +6,7 @@
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <IsPackable>false</IsPackable>
     <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
