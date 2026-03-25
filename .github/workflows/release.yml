@@ -1,0 +1,57 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install Dalamud dependencies
+        run: |
+          mkdir -p ~/.xlcore/dalamud/Hooks/dev
+          # Note: Actual Dalamud libs need to be downloaded from XIVLauncher
+          # For now, this is a placeholder. See DEPLOYMENT.md for manual setup.
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./SamplePlugin
+
+      - name: Build
+        run: dotnet build -c Release
+        working-directory: ./SamplePlugin
+
+      - name: Create Release Package
+        run: |
+          mkdir -p release/SamplePlugin
+          cp -r SamplePlugin/bin/Release/SamplePlugin/* release/SamplePlugin/
+          cd release
+          zip -r latest.zip SamplePlugin/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release/latest.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update manifest (optional)
+        run: |
+          # This step would update manifest.json with version info
+          echo "Manifest update would happen here"

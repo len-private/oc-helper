@@ -1,0 +1,31 @@
+[
+    {
+        "Author": "OC-Helper Contributors",
+        "Name": "OC-Helper",
+        "InternalName": "OCHelper",
+        "Punchline": "Clean automation for Occult Crescent farming.",
+        "Description": "OC-Helper provides modular automation for Occult Crescent farming with a focus on code clarity and working configuration.\n\nFeatures:\n- Treasure hunting and tracking\n- Combat automation with safety checks\n- Performance metrics (gil/exp per hour)\n- Configurable automation behaviors\n- Over 500 lines of documentation\n\nUnlike other farming plugins, OC-Helper prioritizes readable, maintainable code that you can understand and modify.",
+        "IconUrl": "https://raw.githubusercontent.com/YOUR_USERNAME/oc-helper/refs/heads/main/assets/icon.png",
+        "ApplicableVersion": "any",
+        "RepoUrl": "https://github.com/YOUR_USERNAME/oc-helper",
+        "Tags": [
+            "OC-Helper",
+            "Occult Crescent",
+            "Treasure",
+            "Farming",
+            "Automation",
+            "Combat",
+            "Utilities"
+        ],
+        "DalamudApiLevel": 14,
+        "AssemblyVersion": "0.0.0.1",
+        "DownloadLinkInstall": "https://github.com/YOUR_USERNAME/oc-helper/releases/latest/download/latest.zip",
+        "DownloadLinkUpdate": "https://github.com/YOUR_USERNAME/oc-helper/releases/latest/download/latest.zip",
+        "TestingDalamudApiLevel": 14,
+        "TestingAssemblyVersion": "0.0.0.1",
+        "DownloadLinkTesting": "https://github.com/YOUR_USERNAME/oc-helper/releases/latest/download/latest.zip",
+        "DownloadCount": 0,
+        "LastUpdated": 1743206400000,
+        "IsTestingExclusive": false
+    }
+]

@@ -1,52 +1,206 @@
-> ⚠️ **Don't click Fork!**
-> 
-> This is a GitHub Template repo. If you want to use this for a plugin, [use this template][new-repo] to make a new repo!
->
-> ![image](https://github.com/goatcorp/SamplePlugin/assets/16760685/d9732094-e1ed-4769-a70b-58ed2b92580c)
+# OC-Helper: Clean Dalamud Automation for Occult Crescent
 
-# SamplePlugin
+> A modular, well-documented Dalamud plugin for automating Occult Crescent farming—built with clarity and maintainability in mind.
 
-[![Use This Template badge](https://img.shields.io/badge/Use%20This%20Template-0?logo=github&labelColor=grey)][new-repo]
+## Why OC-Helper?
 
+Unlike BOCCHI and similar plugins, OC-Helper prioritizes:
 
-Simple example plugin for Dalamud.
+- ✅ **Clear Code**: Every class and method is documented explaining what it does and why
+- ✅ **Working Configuration**: No broken config mapping—strong types, clear defaults
+- ✅ **Modular Design**: Each automation feature is a separate service with one responsibility
+- ✅ **Easy to Extend**: Add new features by following established patterns
+- ✅ **Maintainable**: Code you can understand and modify without confusion
 
-This is not designed to be the simplest possible example, but it is also not designed to cover everything you might want to do. For more detailed questions, come ask in [the Discord](https://discord.gg/holdshift).
+## Features
 
-## Main Points
+### Current
+- **Treasure Detection & Tracking** - Automatically find nearby treasures
+- **Combat Automation** - Aggro management with safety checks
+- **Performance Metrics** - Track gil/exp earned per session
+- **Configurable Behaviors** - Disable safety features, adjust ranges, etc.
 
-* Simple functional plugin
-  * Slash command
-  * Main UI
-  * Settings UI
-  * Image loading
-  * Plugin json
-* Simple, slightly-improved plugin configuration handling
-* Project organization
-  * Copies all necessary plugin files to the output directory
-    * Does not copy dependencies that are provided by dalamud
-    * Output directory can be zipped directly and have exactly what is required
-  * Hides data files from visual studio to reduce clutter
-    * Also allows having data files in different paths than VS would usually allow if done in the IDE directly
+### Planned
+- Auto-pathfinding to treasures
+- Automatic buff casting (Bard, Knight, Monk)
+- Inventory management & loot filtering
+- Advanced combat rotations
 
+## Installation
 
-The intention is less that any of this is used directly in other projects, and more to show how similar things can be done.
+1. Clone this repository
+2. Build with `dotnet build`
+3. Copy the compiled plugin to your Dalamud plugins directory
+4. Enable the plugin in `/xlplugins`
 
-## How To Use
+## Quick Start
 
-### Getting Started
+```
+/oc              - Toggle main automation window
+/xlconfig oc     - Open configuration window
+/xllog           - View plugin logs
+```
 
-To begin, [clone this template repository][new-repo] to your own GitHub account. This will automatically bring in everything you need to get a jumpstart on development. You do not need to fork this repository unless you intend to contribute modifications to it.
+## Architecture
 
-Be sure to also check out the [Dalamud Developer Docs][dalamud-docs] for helpful information about building your own plugin. The Developer Docs includes helpful information about all sorts of things, including [how to submit][submit] your newly-created plugin to the official repository. Assuming you use this template repository, the provided project build configuration and license are already chosen to make everything a breeze.
+The plugin is organized into **three layers**:
 
-[new-repo]: https://github.com/new?template_name=SamplePlugin&template_owner=goatcorp
-[dalamud-docs]: https://dalamud.dev
-[submit]: https://dalamud.dev/plugin-publishing/submission
+### Configuration Layer (`Configuration.cs`)
+Defines all settings with XML documentation and sensible defaults:
+```csharp
+public TreasureHuntingConfig TreasureHunting { get; set; } = new();
+```
+
+### Service Layer (`Services/`)
+Business logic separate from UI—each service handles one feature:
+- `TreasureHuntingService` - Detect and track treasures
+- `CombatAutomationService` - Manage combat automation
+- `PerformanceTrackerService` - Track statistics
+
+### UI Layer (`Windows/`)
+ImGui windows displaying status and configuration
+
+**Why this matters**: You can test services independently, replace services without affecting UI, and understand exactly what each piece does.
+
+## Understanding the Code
+
+Start here:
+1. Read `ARCHITECTURE.md` for the big picture
+2. Look at `Configuration.cs` to see what features are available
+3. Examine `Services/TreasureHuntingService.cs` as an example service
+4. Open `Plugin.cs` to see how services are integrated
+
+Each file has comments explaining the "why" behind implementation choices.
+
+## Extending OC-Helper
+
+To add a new feature:
+
+1. Define config in `Configuration.cs`:
+   ```csharp
+   [Serializable]
+   public class MyNewFeatureConfig
+   {
+       public bool Enabled { get; set; } = false;
+       public float Setting1 { get; set; } = 50f;
+   }
+   ```
+
+2. Create a service in `Services/MyNewFeatureService.cs`:
+   ```csharp
+   public sealed class MyNewFeatureService : IDisposable
+   {
+       public void Update() { /* Your logic */ }
+       public void Dispose() { }
+   }
+   ```
+
+3. Integrate in `Plugin.cs`:
+   - Create the service in the constructor
+   - Call its `Update()` method in `OnFrameworkUpdate()`
+   - Dispose it in `Dispose()`
+
+See `ARCHITECTURE.md` for detailed patterns and examples.
+
+## Configuration Storage
+
+Settings are saved to:
+```
+%APPDATA%\XIVLauncher\pluginConfigs\OC-Helper\SamplePlugin.json
+```
+
+The JSON structure mirrors your `Configuration.cs` classes:
+```json
+{
+  "Version": 1,
+  "TreasureHunting": {
+    "Enabled": true,
+    "DetectionRadius": 100.0,
+    "AutoPathfind": true
+  },
+  "CombatAutomation": {
+    "Enabled": false,
+    "SafetyHpThreshold": 30
+  }
+}
+```
+
+No custom mapping needed—Dalamud handles serialization automatically.
+
+## Debugging
+
+View detailed logs in-game:
+```
+/xllog
+```
+
+Each service logs its actions:
+- `Information` - Important events (feature enabled, session started)
+- `Warning` - Issues that don't break automation (low HP, no treasures)
+- `Error` - Critical failures (check these!)
+
+Add your own logs:
+```csharp
+_log.Debug($"Found {treasures.Count} treasures");
+```
+
+## Building
 
 ### Prerequisites
+- .NET 8 SDK
+- Dalamud dependency (included in project)
 
-SamplePlugin assumes all the following prerequisites are met:
+### Build
+```bash
+cd SamplePlugin
+dotnet build
+```
+
+### Output
+Compiled plugin: `bin/Release/SamplePlugin/SamplePlugin.json` (+ .dll)
+
+## License
+
+AGPL-3.0 - See LICENSE.md
+
+## Contributing
+
+Want to improve OC-Helper? The codebase is designed to be understandable and modular:
+
+1. Pick an issue or feature
+2. Follow the patterns in existing services
+3. Document your changes with XML comments
+4. Test your service independently
+5. Submit a PR
+
+## Comparison: Why This Design Works Better
+
+| Aspect | BOCCHI | OC-Helper |
+|--------|--------|-----------|
+| Config | Magic strings, broken mapping | Strong types, auto-serialization |
+| Code clarity | Dense, hard to follow | Documented, clear flows |
+| Architecture | Monolithic | Service-based, testable |
+| Adding features | Unclear patterns | Established, easy-to-follow patterns |
+| Debugging | Hard to trace | Comprehensive logging |
+
+## Known Limitations
+
+- Pathfinding is not yet implemented (uses basic positioning)
+- Buff casting requires manual job setup
+- Only works in Occult Crescent (limited by navigation)
+
+## Support
+
+For issues, questions, or improvements:
+1. Check `ARCHITECTURE.md` for patterns
+2. Read the XML documentation in source files
+3. Enable `/xllog` and look for error messages
+4. File an issue on GitHub
+
+---
+
+**Happy farming!** 🎮
+
 
 * XIVLauncher, FINAL FANTASY XIV, and Dalamud have all been installed and the game has been run with Dalamud at least once.
 * XIVLauncher is installed to its default directories and configurations.

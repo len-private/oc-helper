@@ -1,12 +1,14 @@
 {
-  "Author": "your name here",
-  "Name": "Sample Plugin",
-  "Punchline": "A short one-liner that shows up in /xlplugins.",
-  "Description": "A description that shows up in /xlplugins. List any major slash-command(s).",
+  "Author": "OC-Helper Contributors",
+  "Name": "OC-Helper",
+  "Punchline": "Clean, modular automation for Occult Crescent farming.",
+  "Description": "OC-Helper automates treasure hunting and combat in Occult Crescent dungeons. Features clear code architecture and working configuration. Use /oc to open the UI.",
   "ApplicableVersion": "any",
   "Tags": [
-    "sample",
-    "plugin",
-    "goats"
+    "automation",
+    "treasure",
+    "farming",
+    "occult-crescent",
+    "utilities"
   ]
 }
